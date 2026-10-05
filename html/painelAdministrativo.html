@@ -11,11 +11,11 @@
     <!-- Header -->
     <header>
       <h1>📚 Painel Administrativo</h1>
-      <nav class="header-nav" id="main-nav">
-        <a href="#" onclick="navigate('view-dashboard')" class="active"
+      <nav class="view-header-nav" id="main-nav">
+        <a href="#" data-navigate="view-dashboard" class="active"
           >Painel de Controle</a
         >
-        <a href="#" onclick="logout()">Sair do Sistema</a>
+        <a href="#" data-action="logout">Sair do Sistema</a>
       </nav>
     </header>
 
@@ -35,7 +35,7 @@
         </div>
 
         <div class="dashboard-grid">
-          <div class="dash-card" onclick="navigate('view-cadastrar')">
+          <div class="dash-card" data-navigate="view-cadastrar-livro">
             <div class="dash-icon">📖</div>
             <h3 class="dash-title">Cadastrar / Editar Livro</h3>
             <p style="color: #777; font-size: 14px">
@@ -44,7 +44,7 @@
             </p>
           </div>
 
-          <div class="dash-card" onclick="navigate('view-devolucao')">
+          <div class="dash-card" data-navigate="view-devolucao">
             <div class="dash-icon">🔄</div>
             <h3 class="dash-title">Processar Devolução</h3>
             <p style="color: #777; font-size: 14px">
@@ -53,8 +53,8 @@
             </p>
           </div>
 
-          <div class="dash-card" onclick="navigate('view-cadastrar-usuario')">
-            <div class="dash-icon">📖</div>
+          <div class="dash-card" data-navigate="view-cadastrar-usuario">
+            <div class="dash-icon">👤</div>
             <h3 class="dash-title">Cadastrar Usuário</h3>
             <p style="color: #777; font-size: 14px">
               Adicione novos usuários ao sistema ou atualize suas informações.
@@ -64,7 +64,7 @@
       </section>
 
       <!-- ================= VIEW: CADASTRAR LIVRO ================= -->
-      <section id="view-cadastrar" class="view">
+      <section id="view-cadastrar-livro" class="view">
         <div class="card">
           <div class="card-header">
             <h2>Cadastrar / Editar Livro</h2>
@@ -73,69 +73,86 @@
             </p>
           </div>
 
-          <form id="form-cadastrar" onsubmit="handleCadastroLivro(event)">
+          <form id="form-cadastrar">
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">ISBN (Identificador)</label>
+                <label for="titulo">Título do Livro *</label>
                 <input
                   type="text"
-                  id="livro-isbn"
+                  id="titulo"
                   class="form-control"
-                  placeholder="Ex: 978-8535914849"
+                  name="titulo"
                   required
+                  placeholder="Ex: Dom Casmurro"
                 />
               </div>
+
               <div class="form-group">
-                <label class="form-label">Título da Obra</label>
+                <label for="autor">Autor *</label>
                 <input
                   type="text"
-                  id="livro-titulo"
+                  id="autor"
                   class="form-control"
-                  placeholder="Ex: O Senhor dos Anéis"
+                  name="autor"
                   required
+                  placeholder="Ex: Machado de Assis"
                 />
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label">Autor</label>
+                <label for="isbn">ISBN</label>
                 <input
                   type="text"
-                  id="livro-autor"
+                  id="isbn"
                   class="form-control"
-                  placeholder="Ex: J.R.R. Tolkien"
-                  required
+                  name="isbn"
+                  placeholder="Ex: 9788535911664"
                 />
               </div>
+
               <div class="form-group">
-                <label class="form-label"
-                  >Quantidade de Exemplares (total)</label
-                >
+                <label for="ano">Ano de Publicação</label>
                 <input
                   type="number"
-                  id="livro-qtd"
+                  id="ano"
                   class="form-control"
-                  placeholder="0"
-                  min="1"
-                  required
+                  name="ano"
+                  min="1000"
+                  max="2100"
+                  placeholder="Ex: 1899"
                 />
               </div>
             </div>
 
-            <div style="display: flex; gap: 15px; margin-top: 10px">
-              <button type="submit" class="btn">
-                Salvar no Banco de Dados
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="navigate('view-dashboard')"
-              >
-                Voltar
-              </button>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="quantidade">Quantidade em Estoque *</label>
+                <input
+                  type="number"
+                  id="quantidade"
+                  class="form-control"
+                  name="quantidade"
+                  required
+                  min="1"
+                  value="1"
+                />
+              </div>
             </div>
+            <button type="submit" id="btnSalvar" class="btn">
+              Salvar Livro
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-navigate="view-dashboard"
+            >
+              Voltar
+            </button>
           </form>
+
+          <div id="mensagem"></div>
         </div>
       </section>
 
@@ -162,7 +179,7 @@
                 placeholder="Ex: a1b2c3d4-e5f6-..."
                 style="flex-grow: 1"
               />
-              <button type="button" class="btn" onclick="verificarAtraso()">
+              <button type="button" class="btn" data-action="verificar-atraso">
                 Verificar Atraso
               </button>
             </div>
@@ -186,7 +203,7 @@
             <button
               type="button"
               class="btn btn-secondary"
-              onclick="fecharDevolucao()"
+              data-action="fechar-devolucao"
             >
               Voltar ao Início
             </button>
@@ -210,7 +227,7 @@
               Usuário cadastrado com sucesso!
             </div>
 
-            <form id="form-staff" onsubmit="criarStaff(event)">
+            <form id="form-staff">
               <div class="form-grid">
                 <!-- Nome -->
                 <div class="form-group full-width">
@@ -223,7 +240,7 @@
                     class="form-input"
                     placeholder="Ex: Maria de Oliveira"
                     required
-                    oninput="atualizarPreview()"
+                    data-preview
                   />
                 </div>
 
@@ -239,7 +256,7 @@
                     class="form-input"
                     placeholder="maria@email.com"
                     required
-                    oninput="atualizarPreview()"
+                    data-preview
                   />
                 </div>
 
@@ -254,7 +271,7 @@
                     class="form-input"
                     placeholder="••••••••"
                     required
-                    oninput="validarSenhas()"
+                    data-validar-senha
                   />
                 </div>
 
@@ -269,7 +286,7 @@
                     class="form-input"
                     placeholder="••••••••"
                     required
-                    oninput="validarSenhas()"
+                    data-validar-senha
                   />
                   <span id="senha-error" class="error-message"
                     >As senhas não coincidem.</span
@@ -282,12 +299,7 @@
                     >Papel do Usuário (Enum)
                     <span class="required-star">*</span></label
                   >
-                  <select
-                    id="papel"
-                    class="form-select"
-                    required
-                    onchange="atualizarPreview()"
-                  >
+                  <select id="papel" class="form-select" required data-preview>
                     <option value="leitor">Leitor / Aluno</option>
                     <option value="bibliotecario">Bibliotecário</option>
                     <option value="administrador">Administrador</option>
@@ -302,7 +314,7 @@
                     id="avatar_url"
                     class="form-input"
                     placeholder="https://exemplo.com/foto.jpg"
-                    oninput="atualizarPreview()"
+                    data-preview
                   />
                 </div>
 
@@ -352,11 +364,7 @@
                   justify-content: flex-end;
                 "
               >
-                <button
-                  type="reset"
-                  class="button button-secondary"
-                  onclick="resetarFormulario()"
-                >
+                <button type="reset" class="button button-secondary">
                   Limpar
                 </button>
                 <button type="submit" class="button">Cadastrar Usuário</button>
@@ -372,8 +380,10 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../src/config.js"></script>
-    <script src="../src/common.js"></script>
-    <script src="../src/painelAdministrativo.js"></script>
+    <script type="module" src="../src/common/common.js"></script>
+    <script
+      type="module"
+      src="../src/painelAdministrativo/painelAdministrativo.js"
+    ></script>
   </body>
 </html>
